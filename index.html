@@ -18,7 +18,6 @@
             box-sizing: border-box;
         }
 
-        /* Анимированный градиентный фон */
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -26,7 +25,8 @@
         }
 
         body {
-            font-family: -apple-system, 'Helvetica Neue', Helvetica, 'SF Pro Text', sans-serif;
+            font-family: 'Helvetica Neue', 'Helvetica', 'SF Pro Text', sans-serif;
+            font-weight: 950;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -65,17 +65,6 @@
             --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        body.dark {
-            --glass-bg: rgba(28, 28, 30, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --text-primary: #f5f5f7;
-            --text-secondary: #8e8e93;
-        }
-
-        body.dark .gradient-bg::after {
-            background: rgba(0, 0, 0, 0.6);
-        }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -98,10 +87,6 @@
             transition: opacity 0.5s ease;
         }
 
-        .loader {
-            text-align: center;
-        }
-
         .loader-circle {
             width: 60px;
             height: 60px;
@@ -114,11 +99,6 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        .loader p {
-            color: var(--text-primary);
-            font-size: 16px;
         }
 
         /* Главная страница */
@@ -155,7 +135,7 @@
 
         .hero h1 {
             font-size: 56px;
-            font-weight: 700;
+            font-weight: 950;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
             -webkit-background-clip: text;
             background-clip: text;
@@ -165,9 +145,9 @@
 
         .hero .group {
             font-size: 24px;
+            font-weight: 950;
             color: var(--text-secondary);
             margin-bottom: 32px;
-            font-weight: 500;
         }
 
         .apple-btn-large {
@@ -177,7 +157,7 @@
             padding: 16px 48px;
             border-radius: 50px;
             font-size: 20px;
-            font-weight: 600;
+            font-weight: 950;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
@@ -217,14 +197,8 @@
 
         .project-section h2 {
             font-size: 32px;
-            font-weight: 600;
+            font-weight: 950;
             margin-bottom: 16px;
-        }
-
-        .project-icon {
-            font-size: 48px;
-            color: var(--accent-blue);
-            margin-bottom: 20px;
         }
 
         /* Страница расписания */
@@ -280,7 +254,7 @@
             border-radius: 40px;
             padding: 12px 24px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 950;
             color: var(--text-primary);
             cursor: pointer;
             z-index: 1002;
@@ -309,7 +283,7 @@
             padding: 12px 28px;
             border-radius: 40px;
             font-size: 17px;
-            font-weight: 500;
+            font-weight: 950;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
@@ -328,6 +302,15 @@
             color: white;
         }
 
+        /* Кнопка эмбиента с анимацией прыжка */
+        .ambient-btn {
+            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .ambient-btn.jump {
+            transform: translateY(-8px);
+        }
+
         .apple-select {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -335,7 +318,8 @@
             border-radius: 40px;
             padding: 0 20px;
             font-size: 17px;
-            font-family: inherit;
+            font-weight: 950;
+            font-family: 'Helvetica Neue', sans-serif;
             color: var(--text-primary);
             cursor: pointer;
             height: 48px;
@@ -353,7 +337,7 @@
             align-items: center;
             gap: 10px;
             font-size: 15px;
-            font-weight: 500;
+            font-weight: 950;
             color: var(--text-secondary);
         }
 
@@ -384,7 +368,7 @@
 
         .day-header h2 {
             font-size: 32px;
-            font-weight: 600;
+            font-weight: 950;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -416,30 +400,33 @@
         }
 
         .pair-number {
-            font-weight: 600;
+            font-weight: 950;
             font-size: 20px;
             color: var(--accent-blue);
         }
 
         .pair-time {
             font-size: 15px;
+            font-weight: 950;
             color: var(--text-secondary);
         }
 
         .pair-subject {
             font-size: 19px;
-            font-weight: 500;
+            font-weight: 950;
             margin: 12px 0 8px;
         }
 
         .pair-teacher {
             font-size: 15px;
+            font-weight: 950;
             color: #34c759;
             margin-bottom: 6px;
         }
 
         .pair-room {
             font-size: 15px;
+            font-weight: 950;
             color: #ff9f0a;
         }
 
@@ -447,6 +434,7 @@
             text-align: center;
             padding: 60px;
             color: var(--text-secondary);
+            font-weight: 950;
         }
 
         .footer {
@@ -454,15 +442,42 @@
             padding: 40px;
             color: var(--text-secondary);
             font-size: 13px;
+            font-weight: 950;
+        }
+
+        /* Уведомление */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-blue);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-weight: 950;
+            font-size: 16px;
+            z-index: 2000;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
             .hero-content { padding: 40px 30px; }
             .hero h1 { font-size: 36px; }
             .control-bar { flex-direction: column; align-items: stretch; }
-            .day-header h2 { font-size: 24px; }
-            .pair-number { font-size: 16px; }
-            .pair-subject { font-size: 15px; }
+            .notification { bottom: 20px; right: 20px; left: 20px; text-align: center; }
         }
     </style>
 </head>
@@ -473,7 +488,7 @@
     <div class="loader-wrapper" id="loader">
         <div class="loader">
             <div class="loader-circle"></div>
-            <p>Загрузка расписания...</p>
+            <p style="font-weight: 950;">Загрузка расписания...</p>
         </div>
     </div>
 
@@ -491,7 +506,7 @@
         <div class="project-section">
             <div class="project-icon"><i class="fas fa-laptop-code"></i></div>
             <h2>Проект Максима Иванова</h2>
-            <p>Студент группы РФ24-22Б</p>
+            <p style="font-weight: 950;">Студент группы РФ24-22Б</p>
         </div>
     </div>
 
@@ -516,7 +531,7 @@
                         <option value="sunday">Воскресенье</option>
                     </select>
                     <div class="week-badge" id="weekInfo"><i class="fas fa-calendar-week"></i> Загрузка...</div>
-                    <button class="apple-button" id="themeToggle"><i class="fas fa-moon"></i> Тёмная тема</button>
+                    <button class="apple-button ambient-btn" id="ambientToggle"><i class="fas fa-music"></i> Эмбиент выкл</button>
                 </div>
                 <div id="scheduleContainer" class="schedule-grid"><div class="empty-message"><i class="fas fa-sparkles"></i> Выберите день</div></div>
                 <div class="footer"><span id="statusText"><i class="fas fa-check-circle"></i> РФ24-22Б</span></div>
@@ -525,33 +540,76 @@
     </div>
 
     <script>
+        // ========== ЗВУКИ (тактильные, глухие) ==========
+        function playTapSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const gain = audioContext.createGain();
+                gain.connect(audioContext.destination);
+                gain.gain.value = 0.08;
+                
+                const osc = audioContext.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.value = 120;
+                osc.connect(gain);
+                
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.15);
+                osc.stop(audioContext.currentTime + 0.15);
+                
+                setTimeout(() => audioContext.close(), 200);
+            } catch(e) {}
+        }
+
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const gain = audioContext.createGain();
+                gain.connect(audioContext.destination);
+                gain.gain.value = 0.12;
+                
+                const osc = audioContext.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.value = 440;
+                osc.connect(gain);
+                
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.3);
+                osc.stop(audioContext.currentTime + 0.3);
+                
+                setTimeout(() => audioContext.close(), 400);
+            } catch(e) {}
+        }
+
         // ========== ВИБРАЦИЯ ==========
         function vibrate() {
             if (window.navigator && window.navigator.vibrate) {
-                window.navigator.vibrate(10);
+                window.navigator.vibrate(15);
             }
         }
 
-        // ========== ЭМБИЕНТ МУЗЫКА ==========
+        // ========== ЭМБИЕНТ МУЗЫКА С ВОЗМОЖНОСТЬЮ ВЫКЛЮЧЕНИЯ ==========
         let audioContext = null;
         let isPlaying = false;
+        let ambientEnabled = true;
 
         function startAmbientMusic() {
+            if (!ambientEnabled) return;
             if (audioContext && isPlaying) return;
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const gain = audioContext.createGain();
-                gain.gain.value = 0.12;
+                gain.gain.value = 0.1;
                 gain.connect(audioContext.destination);
-
+                
                 function playNote(freq, duration, delay) {
                     setTimeout(() => {
-                        if (!audioContext || audioContext.state !== 'running') return;
+                        if (!audioContext || audioContext.state !== 'running' || !ambientEnabled) return;
                         const osc = audioContext.createOscillator();
                         const g = audioContext.createGain();
                         osc.type = 'sine';
                         osc.frequency.value = freq;
-                        g.gain.value = 0.06;
+                        g.gain.value = 0.05;
                         osc.connect(g);
                         g.connect(gain);
                         osc.start();
@@ -559,9 +617,9 @@
                         osc.stop(audioContext.currentTime + duration);
                     }, delay * 1000);
                 }
-
+                
                 function startLoop() {
-                    if (!isPlaying) return;
+                    if (!isPlaying || !ambientEnabled) return;
                     playNote(261.63, 4, 0);
                     playNote(329.63, 4, 2);
                     playNote(392.00, 4, 4);
@@ -571,7 +629,7 @@
                     playNote(261.63, 6, 16);
                     setTimeout(startLoop, 22000);
                 }
-
+                
                 audioContext.resume().then(() => {
                     isPlaying = true;
                     startLoop();
@@ -579,10 +637,84 @@
             } catch(e) { console.log("Аудио не поддерживается"); }
         }
 
+        function stopAmbientMusic() {
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+                isPlaying = false;
+            }
+        }
+
+        function toggleAmbient() {
+            playTapSound();
+            vibrate();
+            ambientEnabled = !ambientEnabled;
+            const btn = document.getElementById('ambientToggle');
+            if (ambientEnabled) {
+                btn.innerHTML = '<i class="fas fa-music"></i> Эмбиент вкл';
+                startAmbientMusic();
+            } else {
+                btn.innerHTML = '<i class="fas fa-music-slash"></i> Эмбиент выкл';
+                stopAmbientMusic();
+            }
+            // Анимация прыжка
+            btn.classList.add('jump');
+            setTimeout(() => btn.classList.remove('jump'), 200);
+        }
+
+        // Запускаем музыку при первом клике
         document.body.addEventListener('click', function initMusic() {
-            startAmbientMusic();
+            if (ambientEnabled) startAmbientMusic();
             document.body.removeEventListener('click', initMusic);
         }, { once: true });
+
+        // ========== УВЕДОМЛЕНИЯ О ПАРАХ ==========
+        function checkAndNotify() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentDay = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][now.getDay()];
+            const weekType = getWeekParity();
+            const daySchedule = schedule[currentDay]?.[weekType];
+            
+            if (daySchedule) {
+                for (let pairNum in daySchedule) {
+                    const pair = daySchedule[pairNum];
+                    const [startHour, startMinute] = pair.time.split('-')[0].split(':').map(Number);
+                    
+                    const diffMinutes = (startHour * 60 + startMinute) - (currentHour * 60 + currentMinute);
+                    
+                    if (diffMinutes === 5) {
+                        const notificationId = `notify_${currentDay}_${pairNum}`;
+                        if (!localStorage.getItem(notificationId)) {
+                            showNotification(pair.name);
+                            localStorage.setItem(notificationId, 'sent');
+                            playNotificationSound();
+                            vibrate();
+                            // Очищаем через час
+                            setTimeout(() => localStorage.removeItem(notificationId), 3600000);
+                        }
+                    }
+                }
+            }
+        }
+
+        function showNotification(subjectName) {
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = 'notification';
+            notificationDiv.innerHTML = `<i class="fas fa-bell"></i> До начала "${subjectName}" осталось 5 минут! Не опаздывайте!`;
+            document.body.appendChild(notificationDiv);
+            
+            setTimeout(() => {
+                notificationDiv.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notificationDiv.remove(), 300);
+            }, 5000);
+            
+            notificationDiv.onclick = () => notificationDiv.remove();
+        }
+
+        setInterval(checkAndNotify, 60000);
+        checkAndNotify();
 
         // ========== ДАННЫЕ РАСПИСАНИЯ ==========
         const schedule = {
@@ -618,7 +750,7 @@
             const dayData = schedule[day]?.[weekType];
             const weekName = weekType === 'even' ? 'ЧЕТНАЯ' : 'НЕЧЕТНАЯ';
             if (!dayData || Object.keys(dayData).length === 0) {
-                container.innerHTML = `<div class="day-card"><div class="day-header"><h2><i class="fas fa-calendar-day"></i> ${daysRu[day]}</h2><div class="week-type">${weekName} неделя</div></div><div class="empty-message"><i class="fas fa-calendar-times"></i> В этот день нет пар</div></div>`;
+                container.innerHTML = `<div class="day-card"><div class="day-header"><h2><i class="fas fa-calendar-day"></i> ${daysRu[day]}</h2><div class="week-type" style="font-weight:950;">${weekName} неделя</div></div><div class="empty-message"><i class="fas fa-calendar-times"></i> В этот день нет пар</div></div>`;
                 return;
             }
             let pairsHtml = '';
@@ -626,54 +758,29 @@
                 const p = dayData[pairNum];
                 pairsHtml += `<div class="pair-item"><div class="pair-header"><span class="pair-number"><i class="fas fa-chalkboard-user"></i> ${pairNum} пара</span><span class="pair-time"><i class="far fa-clock"></i> ${p.time}</span></div><div class="pair-subject"><i class="fas fa-book-open"></i> ${p.name}</div><div class="pair-teacher"><i class="fas fa-user-graduate"></i> ${p.teacher}</div><div class="pair-room"><i class="fas fa-location-dot"></i> ${p.room}</div></div>`;
             }
-            container.innerHTML = `<div class="day-card"><div class="day-header"><h2><i class="fas fa-calendar-day"></i> ${daysRu[day]}</h2><div class="week-type">${weekName} неделя</div></div><div class="pairs-list">${pairsHtml}</div></div>`;
-            // Сохраняем выбранный день
+            container.innerHTML = `<div class="day-card"><div class="day-header"><h2><i class="fas fa-calendar-day"></i> ${daysRu[day]}</h2><div class="week-type" style="font-weight:950;">${weekName} неделя</div></div><div class="pairs-list">${pairsHtml}</div></div>`;
             localStorage.setItem('savedDay', day);
         }
 
         function showToday() {
+            playTapSound();
             vibrate();
             const today = daysMap[new Date().getDay()];
             renderSchedule(today, getWeekParity());
         }
 
         function showTomorrow() {
+            playTapSound();
             vibrate();
             const tomorrow = daysMap[(new Date().getDay() + 1) % 7];
             renderSchedule(tomorrow, getWeekParity());
         }
 
         function onDaySelect() {
+            playTapSound();
             vibrate();
             const day = document.getElementById('daySelect').value;
             if (day) renderSchedule(day, getWeekParity());
-        }
-
-        // Авто-тема по системе
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.classList.add('dark');
-        } else {
-            document.body.classList.remove('dark');
-        }
-
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if (e.matches) document.body.classList.add('dark');
-            else document.body.classList.remove('dark');
-            updateThemeButton();
-        });
-
-        function toggleTheme() {
-            vibrate();
-            document.body.classList.toggle('dark');
-            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-            updateThemeButton();
-            showToday();
-        }
-
-        function updateThemeButton() {
-            const btn = document.getElementById('themeToggle');
-            const isDark = document.body.classList.contains('dark');
-            btn.innerHTML = isDark ? '<i class="fas fa-sun"></i> Светлая тема' : '<i class="fas fa-moon"></i> Тёмная тема';
         }
 
         // Переходы
@@ -683,6 +790,7 @@
         const loader = document.getElementById('loader');
 
         document.getElementById('showScheduleBtn').addEventListener('click', () => {
+            playTapSound();
             vibrate();
             overlay.classList.add('active');
             setTimeout(() => {
@@ -690,7 +798,6 @@
                 schedulePage.classList.add('active');
                 setTimeout(() => {
                     overlay.classList.remove('active');
-                    // Восстанавливаем сохранённый день
                     const savedDay = localStorage.getItem('savedDay');
                     if (savedDay && schedule[savedDay]) renderSchedule(savedDay, getWeekParity());
                     else showToday();
@@ -700,6 +807,7 @@
         });
 
         document.getElementById('backBtn').addEventListener('click', () => {
+            playTapSound();
             vibrate();
             overlay.classList.add('active');
             setTimeout(() => {
@@ -712,24 +820,31 @@
         document.getElementById('todayBtn').addEventListener('click', showToday);
         document.getElementById('tomorrowBtn').addEventListener('click', showTomorrow);
         document.getElementById('daySelect').addEventListener('change', onDaySelect);
-        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('ambientToggle').addEventListener('click', toggleAmbient);
 
-        // Скрываем лоадер через 1.5 секунды
         setTimeout(() => {
             loader.style.opacity = '0';
             setTimeout(() => { loader.style.display = 'none'; }, 500);
         }, 1500);
 
-        // Регистрация Service Worker для PWA
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(() => {
-                console.log('SW registered');
-            }).catch(err => console.log('SW error:', err));
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
         }
 
         mainPage.style.display = 'block';
         schedulePage.classList.remove('active');
-        updateThemeButton();
     </script>
+    <style>
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        .week-type, .pair-number, .pair-time, .pair-subject, .pair-teacher, .pair-room, .empty-message, .footer, .apple-button, .apple-select, .week-badge, .back-btn, .hero .group, .project-section p {
+            font-weight: 950 !important;
+        }
+        body {
+            font-weight: 950;
+        }
+    </style>
 </body>
 </html>
