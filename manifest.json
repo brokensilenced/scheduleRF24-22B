@@ -1,0 +1,17 @@
+{
+  "name": "Расписание РФ24-22Б",
+  "short_name": "Расписание",
+  "description": "Расписание занятий для группы РФ24-22Б",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0071e3",
+  "background_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

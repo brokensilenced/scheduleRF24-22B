@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0071e3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Расписание РФ24-22Б">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+    <title>Расписание — РФ24-22Б</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Анимированный градиентный фон */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            font-family: -apple-system, 'Helvetica Neue', Helvetica, 'SF Pro Text', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+        }
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --text-primary: #1d1d1f;
+            --text-secondary: #424245;
+            --accent-blue: #0071e3;
+            --accent-blue-hover: #0077ed;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        body.dark {
+            --glass-bg: rgba(28, 28, 30, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #f5f5f7;
+            --text-secondary: #8e8e93;
+        }
+
+        body.dark .gradient-bg::after {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Лоадер */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            text-align: center;
+        }
+
+        .loader-circle {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--glass-border);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader p {
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        /* Главная страница */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 80px;
+            padding: 60px 80px;
+            max-width: 700px;
+            animation: fadeInScale 0.8s ease;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hero-icon {
+            font-size: 80px;
+            color: var(--accent-blue);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .hero .group {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .apple-btn-large {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .apple-btn-large:hover {
+            background: var(--accent-blue-hover);
+            transform: scale(1.02);
+        }
+
+        .apple-btn-large:active {
+            transform: scale(0.98);
+        }
+
+        .scroll-hint {
+            margin-top: 60px;
+            color: var(--text-secondary);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        .project-section {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            margin: 40px 0;
+        }
+
+        .project-section h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .project-icon {
+            font-size: 48px;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        /* Страница расписания */
+        .schedule-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .schedule-page.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            backdrop-filter: blur(0px);
+            z-index: 999;
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .overlay.active {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+        }
+
+        .schedule-content {
+            padding: 20px 0 60px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .control-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 60px;
+            padding: 8px;
+            margin: 80px 0 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .apple-button {
+            background: transparent;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .apple-button:hover {
+            background: var(--glass-bg);
+            transform: scale(1.02);
+        }
+
+        .apple-button.primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .apple-select {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 0 20px;
+            font-size: 17px;
+            font-family: inherit;
+            color: var(--text-primary);
+            cursor: pointer;
+            height: 48px;
+            min-width: 180px;
+        }
+
+        .week-badge {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 0 24px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .schedule-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin: 30px 0;
+        }
+
+        .day-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 48px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .day-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .day-header {
+            padding: 32px 32px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .day-header h2 {
+            font-size: 32px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pairs-list {
+            padding: 8px 24px 24px;
+        }
+
+        .pair-item {
+            background: var(--glass-bg);
+            border-radius: 28px;
+            padding: 20px 24px;
+            margin: 16px 0;
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+        }
+
+        .pair-item:hover {
+            border-color: var(--accent-blue);
+            transform: translateX(8px);
+        }
+
+        .pair-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .pair-number {
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--accent-blue);
+        }
+
+        .pair-time {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .pair-subject {
+            font-size: 19px;
+            font-weight: 500;
+            margin: 12px 0 8px;
+        }
+
+        .pair-teacher {
+            font-size: 15px;
+            color: #34c759;
+            margin-bottom: 6px;
+        }
+
+        .pair-room {
+            font-size: 15px;
+            color: #ff9f0a;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content { padding: 40px 30px; }
+            .hero h1 { font-size: 36px; }
+            .control-bar { flex-direction: column; align-items: stretch; }
+            .day-header h2 { font-size: 24px; }
+            .pair-number { font-size: 16px; }
+            .pair-subject { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <!-- Лоадер -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <p>Загрузка расписания...</p>
+        </div>
+    </div>
+
+    <!-- Главная страница -->
+    <div id="mainPage" class="main-page">
+        <div class="hero">
+            <div class="hero-content">
+                <div class="hero-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h1>Расписание занятий</h1>
+                <div class="group">РФ24-22Б</div>
+                <button class="apple-btn-large" id="showScheduleBtn"><i class="fas fa-calendar-alt"></i> Показать расписание</button>
+                <div class="scroll-hint"><i class="fas fa-chevron-down"></i></div>
+            </div>
+        </div>
+        <div class="project-section">
+            <div class="project-icon"><i class="fas fa-laptop-code"></i></div>
+            <h2>Проект Максима Иванова</h2>
+            <p>Студент группы РФ24-22Б</p>
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Страница расписания -->
+    <div id="schedulePage" class="schedule-page">
+        <div class="schedule-content">
+            <div class="container">
+                <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Назад</button>
+                <div class="control-bar">
+                    <button class="apple-button primary" id="todayBtn"><i class="fas fa-sun"></i> Сегодня</button>
+                    <button class="apple-button" id="tomorrowBtn"><i class="fas fa-arrow-right"></i> Завтра</button>
+                    <select id="daySelect" class="apple-select">
+                        <option value="">Выбрать день</option>
+                        <option value="monday">Понедельник</option>
+                        <option value="tuesday">Вторник</option>
+                        <option value="wednesday">Среда</option>
+                        <option value="thursday">Четверг</option>
+                        <option value="friday">Пятница</option>
+                        <option value="saturday">Суббота</option>
+                        <option value="sunday">Воскресенье</option>
+                    </select>
+                    <div class="week-badge" id="weekInfo"><i class="fas fa-calendar-week"></i> Загрузка...</div>
+                    <button class="apple-button" id="themeToggle"><i class="fas fa-moon"></i> Тёмная тема</button>
+                </div>
+                <div id="scheduleContainer" class="schedule-grid"><div class="empty-message"><i class="fas fa-sparkles"></i> Выберите день</div></div>
+                <div class="footer"><span id="statusText"><i class="fas fa-check-circle"></i> РФ24-22Б</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== ВИБРАЦИЯ ==========
+        function vibrate() {
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+
+        // ========== ЭМБИЕНТ МУЗЫКА ==========
+        let audioContext = null;
+        let isPlaying = false;
+
+        function startAmbientMusic() {
+            if (audioContext && isPlaying) return;
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const gain = audioContext.createGain();
+                gain.gain.value = 0.12;
+                gain.connect(audioContext.destination);
+
+                function playNote(freq, duration, delay) {
+                    setTimeout(() => {
+                        if (!audioContext || audioContext.state !== 'running') return;
+                        const osc = audioContext.createOscillator();
+                        const g = audioContext.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        g.gain.value = 0.06;
+                        osc.connect(g);
+                        g.connect(gain);
+                        osc.start();
+                        g.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+                        osc.stop(audioContext.currentTime + duration);
+                    }, delay * 1000);
+                }
+
+                function startLoop() {
+                    if (!isPlaying) return;
+                    playNote(261.63, 4, 0);
+                    playNote(329.63, 4, 2);
+                    playNote(392.00, 4, 4);
+                    playNote(523.25, 6, 6);
+                    playNote(392.00, 4, 12);
+                    playNote(329.63, 4, 14);
+                    playNote(261.63, 6, 16);
+                    setTimeout(startLoop, 22000);
+                }
+
+                audioContext.resume().then(() => {
+                    isPlaying = true;
+                    startLoop();
+                });
+            } catch(e) { console.log("Аудио не поддерживается"); }
+        }
+
+        document.body.addEventListener('click', function initMusic() {
+            startAmbientMusic();
+            document.body.removeEventListener('click', initMusic);
+        }, { once: true });
+
+        // ========== ДАННЫЕ РАСПИСАНИЯ ==========
+        const schedule = {
+            monday: { odd: { 3: { time: '12:00-13:35', name: 'Базы данных (лекция)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 4-01' }, 4: { time: '14:10-15:45', name: 'Базы данных (пр. занятие)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 2-23и' }, 5: { time: '15:55-17:30', name: 'Основы фотоники (пр. занятие)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 3-19б' }, 6: { time: '17:40-19:15', name: 'Основы фотоники (лаб. работа)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 2-24а' } }, even: { 3: { time: '12:00-13:35', name: 'Базы данных (лекция)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 4-01' }, 4: { time: '14:10-15:45', name: 'Базы данных (пр. занятие)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 2-23и' }, 5: { time: '15:55-17:30', name: 'Основы фотоники (пр. занятие)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 3-19б' }, 6: { time: '17:40-19:15', name: 'Основы фотоники (лаб. работа)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 2-24а' } } },
+            tuesday: { odd: { 3: { time: '12:00-13:35', name: 'Оптическая физика (пр. занятие)', teacher: 'Слюсарева Е. А.', room: 'Корпус №12, ауд. 3-19в' }, 4: { time: '14:10-15:45', name: 'Физика (пр. занятие)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 4-01' } }, even: { 3: { time: '12:00-13:35', name: 'Оптическая физика (пр. занятие)', teacher: 'Слюсарева Е. А.', room: 'Корпус №12, ауд. 3-19в' }, 4: { time: '14:10-15:45', name: 'Физика (пр. занятие)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 4-01' }, 5: { time: '15:55-17:30', name: 'Основы фотоники (лекция)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 3-19в' } } },
+            wednesday: { odd: { 2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Папирная Е. Д.', room: 'Корпус №12, ауд. 2-14' }, 3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №12, ауд. 1-28' }, 4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-10' }, 5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-08, 3-10' } }, even: { 2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Папирная Е. Д.', room: 'Корпус №12, ауд. 2-14' }, 3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №12, ауд. 1-28' }, 4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-02' }, 5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-08, 3-10' } } },
+            thursday: { odd: { 2: { time: '10:15-11:50', name: 'Физика (лекция)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 1-21' }, 3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (пр. занятие)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' }, 4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' } }, even: { 2: { time: '10:15-11:50', name: 'Физика (лекция)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 1-21' }, 3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (пр. занятие)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' }, 4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' } } },
+            friday: { odd: {}, even: {} }, saturday: { odd: {}, even: {} }, sunday: { odd: {}, even: {} }
+        };
+
+        const daysRu = { monday: 'Понедельник', tuesday: 'Вторник', wednesday: 'Среда', thursday: 'Четверг', friday: 'Пятница', saturday: 'Суббота', sunday: 'Воскресенье' };
+        const daysMap = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+        function getWeekParity() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 1);
+            const days = Math.floor((now - start) / (24 * 60 * 60 * 1000));
+            const weekNumber = Math.ceil((days + start.getDay() + 1) / 7);
+            return weekNumber % 2 === 0 ? 'even' : 'odd';
+        }
+
+        function updateWeekInfo() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 1);
+            const days = Math.floor((now - start) / (24 * 60 * 60 * 1000));
+            const weekNumber = Math.ceil((days + start.getDay() + 1) / 7);
+            const parity = getWeekParity() === 'even' ? 'ЧЕТНАЯ' : 'НЕЧЕТНАЯ';
+            document.getElementById('weekInfo').innerHTML = `<i class="fas fa-calendar-week"></i> ${weekNumber}-я неделя • ${parity}`;
+        }
+
+        function renderSchedule(day, weekType) {
+            const container = document.getElementById('scheduleContainer');
+            const dayData = schedule[day]?.[weekType];
+            const weekName = weekType === 'even' ? 'ЧЕТНАЯ' : 'НЕЧЕТНАЯ';
+            if (!dayData || Object.keys(dayData).length === 0) {
+                container.innerHTML = `<div class="day-card"><div class="day-header"><h2><i class="fas fa-calendar-day"></i> ${daysRu[day]}</h2><div class="week-type">${weekName} неделя</div></div><div class="empty-message"><i class="fas fa-calendar-times"></i> В этот день нет пар</div></div>`;
+                return;
+            }
+            let pairsHtml = '';
+            for (let pairNum of Object.keys(dayData).sort()) {
+                const p = dayData[pairNum];
+                pairsHtml += `<div class="pair-item"><div class="pair-header"><span class="pair-number"><i class="fas fa-chalkboard-user"></i> ${pairNum} пара</span><span class="pair-time"><i class="far fa-clock"></i> ${p.time}</span></div><div class="pair-subject"><i class="fas fa-book-open"></i> ${p.name}</div><div class="pair-teacher"><i class="fas fa-user-graduate"></i> ${p.teacher}</div><div class="pair-room"><i class="fas fa-location-dot"></i> ${p.room}</div></div>`;
+            }
+            container.innerHTML = `<div class="day-card"><div class="day-header"><h2><i class="fas fa-calendar-day"></i> ${daysRu[day]}</h2><div class="week-type">${weekName} неделя</div></div><div class="pairs-list">${pairsHtml}</div></div>`;
+            // Сохраняем выбранный день
+            localStorage.setItem('savedDay', day);
+        }
+
+        function showToday() {
+            vibrate();
+            const today = daysMap[new Date().getDay()];
+            renderSchedule(today, getWeekParity());
+        }
+
+        function showTomorrow() {
+            vibrate();
+            const tomorrow = daysMap[(new Date().getDay() + 1) % 7];
+            renderSchedule(tomorrow, getWeekParity());
+        }
+
+        function onDaySelect() {
+            vibrate();
+            const day = document.getElementById('daySelect').value;
+            if (day) renderSchedule(day, getWeekParity());
+        }
+
+        // Авто-тема по системе
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (e.matches) document.body.classList.add('dark');
+            else document.body.classList.remove('dark');
+            updateThemeButton();
+        });
+
+        function toggleTheme() {
+            vibrate();
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeButton();
+            showToday();
+        }
+
+        function updateThemeButton() {
+            const btn = document.getElementById('themeToggle');
+            const isDark = document.body.classList.contains('dark');
+            btn.innerHTML = isDark ? '<i class="fas fa-sun"></i> Светлая тема' : '<i class="fas fa-moon"></i> Тёмная тема';
+        }
+
+        // Переходы
+        const mainPage = document.getElementById('mainPage');
+        const schedulePage = document.getElementById('schedulePage');
+        const overlay = document.getElementById('overlay');
+        const loader = document.getElementById('loader');
+
+        document.getElementById('showScheduleBtn').addEventListener('click', () => {
+            vibrate();
+            overlay.classList.add('active');
+            setTimeout(() => {
+                mainPage.style.display = 'none';
+                schedulePage.classList.add('active');
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    // Восстанавливаем сохранённый день
+                    const savedDay = localStorage.getItem('savedDay');
+                    if (savedDay && schedule[savedDay]) renderSchedule(savedDay, getWeekParity());
+                    else showToday();
+                    updateWeekInfo();
+                }, 500);
+            }, 250);
+        });
+
+        document.getElementById('backBtn').addEventListener('click', () => {
+            vibrate();
+            overlay.classList.add('active');
+            setTimeout(() => {
+                schedulePage.classList.remove('active');
+                mainPage.style.display = 'block';
+                setTimeout(() => { overlay.classList.remove('active'); }, 500);
+            }, 250);
+        });
+
+        document.getElementById('todayBtn').addEventListener('click', showToday);
+        document.getElementById('tomorrowBtn').addEventListener('click', showTomorrow);
+        document.getElementById('daySelect').addEventListener('change', onDaySelect);
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+        // Скрываем лоадер через 1.5 секунды
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        }, 1500);
+
+        // Регистрация Service Worker для PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(() => {
+                console.log('SW registered');
+            }).catch(err => console.log('SW error:', err));
+        }
+
+        mainPage.style.display = 'block';
+        schedulePage.classList.remove('active');
+        updateThemeButton();
+    </script>
+</body>
+</html>
