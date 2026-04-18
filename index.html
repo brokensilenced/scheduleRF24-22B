@@ -280,6 +280,33 @@
             color: white;
         }
 
+        .group-selector {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 60px;
+            padding: 6px;
+            display: inline-flex;
+            gap: 6px;
+        }
+
+        .group-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 950;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .group-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
         .mic-btn, .qr-toggle-btn, .ambient-btn {
             background: var(--bg-glass);
             backdrop-filter: blur(20px);
@@ -493,7 +520,8 @@
             .control-bar { padding: 12px; gap: 8px; margin-bottom: 28px; }
             .btn, .mic-btn, .qr-toggle-btn, .ambient-btn { padding: 10px 20px; font-size: 14px; }
             .theme-selector { width: 100%; justify-content: space-around; }
-            .theme-btn { padding: 6px 14px; font-size: 12px; }
+            .group-selector { width: 100%; justify-content: space-around; }
+            .theme-btn, .group-btn { padding: 6px 14px; font-size: 12px; }
             .day-header { padding: 20px 24px 16px; flex-direction: column; gap: 12px; align-items: flex-start; }
             .pairs-list { padding: 16px 20px 20px; }
             .pair-card { padding: 16px 18px; }
@@ -535,6 +563,13 @@
                 <option value="saturday">Суббота</option>
                 <option value="sunday">Воскресенье</option>
             </select>
+
+            <!-- Переключатель подгрупп -->
+            <div class="group-selector">
+                <button class="group-btn active" data-group="1">👥 1 подгруппа</button>
+                <button class="group-btn" data-group="2">👥 2 подгруппа</button>
+            </div>
+
             <div class="theme-selector">
                 <button class="theme-btn active" data-theme="apple">🍎 Apple</button>
                 <button class="theme-btn" data-theme="neon">🌈 Неон</button>
@@ -567,7 +602,8 @@
 
     <script>
         // ========== РАСПИСАНИЕ ДЛЯ РФ24-22Б ==========
-        const scheduleData = {
+        // 1 подгруппа (твоя)
+        const scheduleGroup1 = {
             monday: {
                 odd: {
                     2: { time: '10:15-11:50', name: 'Базы данных (лекция)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 4-01' },
@@ -593,28 +629,103 @@
             },
             wednesday: {
                 odd: {
-                    2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Папирная Е. Д.', room: 'Корпус №12, ауд. 2-14' },
-                    3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №12, ауд. 1-28' },
-                    4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-10' },
-                    5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-08, 3-10' }
+                    2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Рыбакова Е. В.', room: 'Корпус №15, ауд. 1-08а' },
+                    3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогущова Ю. Н.', room: 'Корпус №12, ауд. 1-28' },
+                    4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-10' }
                 },
                 even: {
-                    2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Папирная Е. Д.', room: 'Корпус №12, ауд. 2-14' },
-                    3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №12, ауд. 1-28' },
-                    4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-02' },
-                    5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-08, 3-10' }
+                    2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Рыбакова Е. В.', room: 'Корпус №15, ауд. 1-08а' },
+                    3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогущова Ю. Н.', room: 'Корпус №12, ауд. 1-28' },
+                    4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-02' }
                 }
             },
             thursday: {
                 odd: {
                     2: { time: '10:15-11:50', name: 'Физика (лекция)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 1-21' },
                     3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (пр. занятие)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' },
-                    4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' }
+                    4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' },
+                    5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Суржикова Д. П.', room: 'Корпус №80, ауд. 3-08, 3-10' }
                 },
                 even: {
                     2: { time: '10:15-11:50', name: 'Физика (лекция)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 1-21' },
                     3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (пр. занятие)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' },
-                    4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' }
+                    4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' },
+                    5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Суржикова Д. П.', room: 'Корпус №80, ауд. 3-08, 3-10' }
+                }
+            },
+            friday: {
+                odd: {
+                    2: { time: '10:15-11:50', name: 'Физическая культура и спорт (лекция)', teacher: 'Тарасенко А. П.', room: 'ЭИОС' },
+                    3: { time: '12:00-13:35', name: 'Программирование на языках высокого уровня (лекция)', teacher: 'Непомнящий О. В.', room: 'ЭИОС' },
+                    4: { time: '14:10-15:45', name: 'Программирование на языках высокого уровня (пр. занятие)', teacher: 'Непомнящий О. В.', room: 'ЭИОС' },
+                    5: { time: '15:55-17:30', name: 'Физическая культура и спорт (пр. занятие)', teacher: 'Тарасенко А. П.', room: 'ЭИОС' }
+                },
+                even: {
+                    2: { time: '10:15-11:50', name: 'Программирование на языках высокого уровня (пр. занятие)', teacher: 'Непомнящий О. В.', room: 'ЭИОС' },
+                    3: { time: '12:00-13:35', name: 'Программирование на языках высокого уровня (пр. занятие)', teacher: 'Непомнящий О. В.', room: 'ЭИОС' },
+                    4: { time: '14:10-15:45', name: 'Физическая культура и спорт (пр. занятие)', teacher: 'Тарасенко А. П.', room: 'ЭИОС' }
+                }
+            },
+            saturday: {
+                odd: {
+                    3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (лекция)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' },
+                    4: { time: '14:10-15:45', name: 'Деловая коммуникация на русском языке (лекция)', teacher: 'Кудрявцева Е. А.', room: 'Корпус №12, ауд. 1-21' },
+                    5: { time: '15:55-17:30', name: 'Деловая коммуникация на русском языке (пр. занятие)', teacher: 'Кудрявцева Е. А.', room: 'Корпус №12, ауд. 3-19в' }
+                },
+                even: {}
+            },
+            sunday: { odd: {}, even: {} }
+        };
+
+        // 2 подгруппа (по твоим скриншотам)
+        const scheduleGroup2 = {
+            monday: {
+                odd: {
+                    2: { time: '10:15-11:50', name: 'Базы данных (лекция)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 4-01' },
+                    3: { time: '12:00-13:35', name: 'Базы данных (пр. занятие)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 2-23и' },
+                    4: { time: '14:10-15:45', name: 'Основы фотоники (пр. занятие)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 3-196' },
+                    5: { time: '15:55-17:30', name: 'Основы фотоники (лаб. работа)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 2-24а' }
+                },
+                even: {
+                    2: { time: '10:15-11:50', name: 'Базы данных (лекция)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 4-01' },
+                    3: { time: '12:00-13:35', name: 'Базы данных (пр. занятие)', teacher: 'Ефремов И. А.', room: 'Корпус №12, ауд. 2-23и' },
+                    4: { time: '14:10-15:45', name: 'Основы фотоники (пр. занятие)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 3-196' },
+                    5: { time: '15:55-17:30', name: 'Основы фотоники (лаб. работа)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 2-24а' }
+                }
+            },
+            tuesday: {
+                odd: {
+                    3: { time: '12:00-13:35', name: 'Оптическая физика (пр. занятие)', teacher: 'Слюсарева Е. А.', room: 'Корпус №12, ауд. 3-19в' }
+                },
+                even: {
+                    3: { time: '12:00-13:35', name: 'Физика (пр. занятие)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 4-01' },
+                    4: { time: '14:10-15:45', name: 'Основы фотоники (лекция)', teacher: 'Ципотан А. С.', room: 'Корпус №12, ауд. 3-19в' }
+                }
+            },
+            wednesday: {
+                odd: {
+                    2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Рыбакова Е. В.', room: 'Корпус №15, ауд. 1-08а' },
+                    3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогущова Ю. Н.', room: 'Корпус №12, ауд. 1-28' },
+                    4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-10' }
+                },
+                even: {
+                    2: { time: '10:15-11:50', name: 'Иностранный язык (пр. занятие)', teacher: 'Рыбакова Е. В.', room: 'Корпус №15, ауд. 1-08а' },
+                    3: { time: '12:00-13:35', name: 'Методы математической физики (пр. занятие)', teacher: 'Тогущова Ю. Н.', room: 'Корпус №12, ауд. 1-28' },
+                    4: { time: '14:10-15:45', name: 'Оптическая физика (лекция)', teacher: 'Рудакова Н. В.', room: 'Корпус №80, ауд. 3-02' }
+                }
+            },
+            thursday: {
+                odd: {
+                    2: { time: '10:15-11:50', name: 'Физика (лекция)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 1-21' },
+                    3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (пр. занятие)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' },
+                    4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' },
+                    5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Суржикова Д. П.', room: 'Корпус №80, ауд. 3-08, 3-10' }
+                },
+                even: {
+                    2: { time: '10:15-11:50', name: 'Физика (лекция)', teacher: 'Балаев Д. А.', room: 'Корпус №12, ауд. 1-21' },
+                    3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (пр. занятие)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' },
+                    4: { time: '14:10-15:45', name: 'Методы математической физики (лекция)', teacher: 'Тогушова Ю. Н.', room: 'Корпус №14, ауд. 34-08' },
+                    5: { time: '15:55-17:30', name: 'Оптическая физика (лаб. работа)', teacher: 'Суржикова Д. П.', room: 'Корпус №80, ауд. 3-08, 3-10' }
                 }
             },
             friday: {
@@ -629,9 +740,22 @@
                     4: { time: '14:10-15:45', name: 'Физическая культура и спорт (пр. занятие)', teacher: 'Тарасенко А. П.', room: 'ЭИОС' }
                 }
             },
-            saturday: { odd: {}, even: {} },
+            saturday: {
+                odd: {
+                    3: { time: '12:00-13:35', name: 'Теория вероятностей и математическая статистика (лекция)', teacher: 'Кузоватов И. А.', room: 'Корпус №15, ауд. 2-19' },
+                    4: { time: '14:10-15:45', name: 'Деловая коммуникация на русском языке (лекция)', teacher: 'Кудрявцева Е. А.', room: 'Корпус №12, ауд. 1-21' },
+                    5: { time: '15:55-17:30', name: 'Деловая коммуникация на русском языке (пр. занятие)', teacher: 'Кудрявцева Е. А.', room: 'Корпус №12, ауд. 3-19в' }
+                },
+                even: {}
+            },
             sunday: { odd: {}, even: {} }
         };
+
+        let currentGroup = 1; // 1 или 2
+
+        function getCurrentSchedule() {
+            return currentGroup === 1 ? scheduleGroup1 : scheduleGroup2;
+        }
 
         const daysRu = {
             monday: 'Понедельник', tuesday: 'Вторник', wednesday: 'Среда',
@@ -640,7 +764,7 @@
         const daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         const daysMap = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
-        // ========== ФУНКЦИИ ==========
+        // ========== ФУНКЦИЯ ОПРЕДЕЛЕНИЯ ЧЁТНОСТИ НЕДЕЛИ ==========
         function getWeekParity() {
             const now = new Date();
             const start = new Date(now.getFullYear(), 0, 1);
@@ -655,7 +779,8 @@
             const currentMinute = now.getMinutes();
             const currentDay = daysMap[now.getDay()];
             const weekType = getWeekParity();
-            const daySchedule = scheduleData[currentDay]?.[weekType];
+            const schedule = getCurrentSchedule();
+            const daySchedule = schedule[currentDay]?.[weekType];
 
             if (!daySchedule || Object.keys(daySchedule).length === 0) {
                 document.getElementById('nextPairTime').innerHTML = 'Сегодня пар нет';
@@ -705,17 +830,17 @@
             }
         }
 
-        // Показать ВСЁ расписание (сегодня первый)
         function renderFullSchedule() {
             const container = document.getElementById('scheduleContainer');
             const weekType = getWeekParity();
             const weekName = weekType === 'even' ? 'ЧЕТНАЯ' : 'НЕЧЕТНАЯ';
             const today = daysMap[new Date().getDay()];
+            const schedule = getCurrentSchedule();
 
             let allDaysHtml = '';
 
             // Сначала показываем сегодняшний день
-            const todayData = scheduleData[today]?.[weekType];
+            const todayData = schedule[today]?.[weekType];
             const todayName = daysRu[today];
 
             if (!todayData || Object.keys(todayData).length === 0) {
@@ -755,11 +880,11 @@
                 `;
             }
 
-            // Потом все остальные дни по порядку
+            // Потом все остальные дни
             for (let day of daysOrder) {
                 if (day === today) continue;
 
-                const dayData = scheduleData[day]?.[weekType];
+                const dayData = schedule[day]?.[weekType];
                 const dayNameRu = daysRu[day];
 
                 if (!dayData || Object.keys(dayData).length === 0) {
@@ -803,23 +928,23 @@
             container.innerHTML = allDaysHtml;
         }
 
-        // Показать выбранный день ПЕРВЫМ, а под ним ВСЁ расписание
         function showSpecificDay(selectedDay) {
             const container = document.getElementById('scheduleContainer');
             const weekType = getWeekParity();
             const weekName = weekType === 'even' ? 'ЧЕТНАЯ' : 'НЕЧЕТНАЯ';
+            const schedule = getCurrentSchedule();
 
             let allDaysHtml = '';
 
-            // Сначала показываем выбранный день
-            const selectedDayData = scheduleData[selectedDay]?.[weekType];
-            const selectedDayName = daysRu[selectedDay];
+            // Сначала выбранный день
+            const selectedData = schedule[selectedDay]?.[weekType];
+            const selectedName = daysRu[selectedDay];
 
-            if (!selectedDayData || Object.keys(selectedDayData).length === 0) {
+            if (!selectedData || Object.keys(selectedData).length === 0) {
                 allDaysHtml += `
                     <div class="day-card glass">
                         <div class="day-header">
-                            <h2><i class="fas fa-calendar-day"></i> ${selectedDayName}</h2>
+                            <h2><i class="fas fa-calendar-day"></i> ${selectedName}</h2>
                             <div class="week-badge">${weekName} неделя</div>
                         </div>
                         <div class="empty-message"><i class="fas fa-calendar-times"></i> В этот день нет пар</div>
@@ -827,8 +952,8 @@
                 `;
             } else {
                 let pairsHtml = '';
-                for (let pairNum of Object.keys(selectedDayData).sort()) {
-                    const p = selectedDayData[pairNum];
+                for (let pairNum of Object.keys(selectedData).sort()) {
+                    const p = selectedData[pairNum];
                     pairsHtml += `
                         <div class="pair-card">
                             <div class="pair-header">
@@ -844,7 +969,7 @@
                 allDaysHtml += `
                     <div class="day-card glass">
                         <div class="day-header">
-                            <h2><i class="fas fa-calendar-day"></i> ${selectedDayName}</h2>
+                            <h2><i class="fas fa-calendar-day"></i> ${selectedName}</h2>
                             <div class="week-badge">${weekName} неделя</div>
                         </div>
                         <div class="pairs-list">${pairsHtml}</div>
@@ -852,11 +977,11 @@
                 `;
             }
 
-            // Потом все остальные дни по порядку
+            // Потом все остальные дни
             for (let day of daysOrder) {
                 if (day === selectedDay) continue;
 
-                const dayData = scheduleData[day]?.[weekType];
+                const dayData = schedule[day]?.[weekType];
                 const dayNameRu = daysRu[day];
 
                 if (!dayData || Object.keys(dayData).length === 0) {
@@ -904,6 +1029,25 @@
             const tomorrowIndex = (new Date().getDay() + 1) % 7;
             const tomorrow = daysMap[tomorrowIndex];
             showSpecificDay(tomorrow);
+        }
+
+        // Переключение подгруппы
+        function setGroup(group) {
+            currentGroup = group;
+            localStorage.setItem('currentGroup', group);
+
+            // Обновляем активную кнопку
+            document.querySelectorAll('.group-btn').forEach(btn => {
+                if (btn.dataset.group == group) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Обновляем расписание
+            renderFullSchedule();
+            updateNextPair();
         }
 
         // ЭМБИЕНТ МУЗЫКА
@@ -1046,10 +1190,13 @@
                 else if (text.includes('среда')) showSpecificDay('wednesday');
                 else if (text.includes('четверг')) showSpecificDay('thursday');
                 else if (text.includes('пятница')) showSpecificDay('friday');
+                else if (text.includes('суббота')) showSpecificDay('saturday');
+                else if (text.includes('первая подгруппа') || text.includes('1 подгруппа')) setGroup(1);
+                else if (text.includes('вторая подгруппа') || text.includes('2 подгруппа')) setGroup(2);
                 else if (text.includes('какая сейчас пара')) {
                     alert(document.getElementById('nextPairTime').innerText + ' ' + document.getElementById('nextPairName').innerText);
                 }
-                else alert('Скажи: сегодня, завтра или день недели');
+                else alert('Скажи: сегодня, завтра, день недели или подгруппа');
             };
         }
 
@@ -1081,8 +1228,16 @@
             btn.onclick = () => setTheme(btn.dataset.theme);
         });
 
+        // ПЕРЕКЛЮЧЕНИЕ ПОДГРУППЫ
+        document.querySelectorAll('.group-btn').forEach(btn => {
+            btn.onclick = () => setGroup(parseInt(btn.dataset.group));
+        });
+
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) setTheme(savedTheme);
+
+        const savedGroup = localStorage.getItem('currentGroup');
+        if (savedGroup) setGroup(parseInt(savedGroup));
 
         // ЗАПУСК
         document.getElementById('todayBtn').onclick = renderFullSchedule;
@@ -1095,7 +1250,6 @@
         setInterval(updateNextPair, 60000);
         updateNextPair();
 
-        // Показываем полное расписание с сегодняшним днём вверху
         renderFullSchedule();
     </script>
 </body>
